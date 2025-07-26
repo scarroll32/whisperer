@@ -53,12 +53,9 @@ def main():
     # Process the selected file
     selected_file = files[choice - 2]  # -2 because choice 1 is URL download
     
-    # Ask if user wants to play the audio
+    # Automatically play audio with VLC if available
     print(f"\nSelected file: {selected_file}")
-    play_choice = input("Play audio with VLC? (y/n): ").strip().lower()
-    
-    if play_choice in ['y', 'yes']:
-        play_audio_with_vlc(selected_file)
+    play_audio_with_vlc(selected_file)
     
     # Continue with transcription
     base_name = os.path.splitext(selected_file)[0]
