@@ -9,6 +9,8 @@ coverage.xml
 
 # Whisper transcription outputs
 *.txt
+!requirements.txt
+!requirements-test.txt
 *.srt
 *.vtt
 

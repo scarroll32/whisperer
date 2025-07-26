@@ -26,7 +26,7 @@ whisperer/
 
 ## Requirements
 
-- Python 3.8 to 3.11 (Whisper is incompatible with 3.12+)
+- Python 3.11 (built and tested specifically for this version)
 - `ffmpeg` installed and available in your system path
 - **VLC** (optional) - For automatic audio playback
 
