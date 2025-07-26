@@ -1,8 +1,8 @@
-# Whisperer: Audio Transcription CLI
+# Whisperer: manage audio transcriptions in your terminal
 
-This is a lightweight command-line tool for transcribing audio files using [OpenAI Whisper](https://github.com/openai/whisper). It automatically sets up a Python virtual environment, installs Whisper, and generates `.txt` transcripts.
+Lightweight CLI for transcribing audio files using [OpenAI Whisper](https://github.com/openai/whisper). It automatically sets up a Python virtual environment, installs Whisper, and generates `.txt` transcripts.
 
-## 📁 Folder Structure
+## Folder Structure
 
 ```
 whisperer/
@@ -93,4 +93,4 @@ Run with:
 
 ## License
 
-MIT License — free to use, adapt, and share.
+MIT
