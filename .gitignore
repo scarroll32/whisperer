@@ -1,0 +1,17 @@
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Whisper transcription outputs
+*.txt
+*.srt
+*.vtt
+
+# macOS system files
+.DS_Store
+
+# Logs or temporary files (if added later)
+*.log
+*.tmp
+
