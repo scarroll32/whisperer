@@ -5,11 +5,10 @@ This is a lightweight command-line tool for transcribing audio files using [Open
 ## 📁 Folder Structure
 
 ```
-src/
-└── whisperer/
-    ├── app.py          # Main transcription script
-    ├── media/          # Put your audio files here
-    └── venv/           # Auto-created virtual environment
+whisperer/
+  ├── app.py          # Main script
+  ├── media/          # Audio files
+  └── venv/           # Auto-created virtual environment
 ```
 
 ## Features
@@ -48,8 +47,8 @@ src/
 2. From terminal:
 
    ```bash
-   cd src/whisperer
-   python3 app.py
+   cd whisperer
+   ./whisperer
    ```
 
 On first run, the script will:
