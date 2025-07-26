@@ -15,3 +15,6 @@ __pycache__/
 *.log
 *.tmp
 
+# Ignore media folder contents but keep the folder itself
+media/*
+!media/.keep
