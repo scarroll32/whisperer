@@ -8,10 +8,13 @@ def log(msg):
         f.write(f"{timestamp} {msg}\n")
 
 def clean_transcript(text):
-    """Clean and format transcript text"""
-    lines = [line.strip() for line in text.splitlines() if line.strip()]
-    joined = " ".join(lines)
-    # Add newline after sentence-ending punctuation
-    import re
-    split_sentences = re.split(r'(?<=[.!?]) +', joined)
-    return "\n".join(split_sentences) 
+    """Clean and format transcript text while preserving line breaks"""
+    # Split into lines and clean each line
+    lines = []
+    for line in text.splitlines():
+        line = line.strip()
+        if line:  # Only add non-empty lines
+            lines.append(line)
+    
+    # Join lines with proper line breaks
+    return "\n".join(lines) 

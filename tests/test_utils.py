@@ -45,8 +45,14 @@ def test_clean_transcript_with_empty_lines():
     expected = "Line 1.\nLine 2.\nLine 3."
     assert clean_transcript(input_text) == expected
 
-def test_clean_transcript_with_sentence_endings():
-    """Test transcript cleaning handles sentence endings properly"""
-    input_text = "Hello world. How are you? I am fine! This is great."
+def test_clean_transcript_preserves_line_breaks():
+    """Test transcript cleaning preserves original line structure"""
+    input_text = "Hello world.\nHow are you?\nI am fine!\nThis is great."
     expected = "Hello world.\nHow are you?\nI am fine!\nThis is great."
+    assert clean_transcript(input_text) == expected
+
+def test_clean_transcript_with_mixed_content():
+    """Test transcript cleaning with mixed content including empty lines and whitespace"""
+    input_text = "  First line.  \n\n  Second line.  \n  \n  Third line.  "
+    expected = "First line.\nSecond line.\nThird line."
     assert clean_transcript(input_text) == expected 
