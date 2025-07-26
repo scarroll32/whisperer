@@ -7,18 +7,16 @@ import re
 from .config import VENV_DIR, MEDIA_DIR, LOG_FILE
 from .utils import log
 from .setup import ensure_yt_dlp
+from .vlc_player import play_audio_with_vlc
 
 def is_youtube_url(url):
-    """Check if the URL is a YouTube URL"""
-    youtube_domains = ['youtube.com', 'youtu.be', 'www.youtube.com', 'm.youtube.com']
-    parsed = urllib.parse.urlparse(url)
-    return any(domain in parsed.netloc for domain in youtube_domains)
+    """Check if URL is a YouTube URL"""
+    youtube_domains = ['youtube.com', 'youtu.be', 'm.youtube.com']
+    parsed_url = urllib.parse.urlparse(url)
+    return any(domain in parsed_url.netloc for domain in youtube_domains)
 
 def download_from_url(url):
-    """Download audio from URL (direct audio or YouTube)"""
-    print(f"Downloading audio from: {url}")
-    log(f"Downloading audio from: {url}")
-
+    """Download audio from URL (YouTube or direct link)"""
     if is_youtube_url(url):
         return download_youtube_audio(url)
     else:
@@ -91,7 +89,10 @@ def download_youtube_audio(url):
     # Find the downloaded file
     downloaded_files = [f for f in os.listdir(MEDIA_DIR) if f.startswith(filename) and f.endswith('.mp3')]
     if downloaded_files:
-        return downloaded_files[0]
+        downloaded_file = downloaded_files[0]
+        # Try to play with VLC
+        play_audio_with_vlc(downloaded_file)
+        return downloaded_file
     return None
 
 def download_direct_audio(url):
@@ -117,6 +118,8 @@ def download_direct_audio(url):
         if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
             print(f"Successfully downloaded: {filename}")
             log(f"Successfully downloaded: {filename}")
+            # Try to play with VLC
+            play_audio_with_vlc(filename)
             return filename
         else:
             print("Download failed: file is empty or doesn't exist")

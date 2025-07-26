@@ -12,6 +12,7 @@ from .download import download_from_url
 from .transcribe import transcribe
 from .ui import list_audio_files, print_menu, get_choice, get_url_input
 from .utils import clean_transcript
+from .vlc_player import play_audio_with_vlc
 
 def main():
     """Main application function"""
@@ -51,6 +52,15 @@ def main():
 
     # Process the selected file
     selected_file = files[choice - 2]  # -2 because choice 1 is URL download
+    
+    # Ask if user wants to play the audio
+    print(f"\nSelected file: {selected_file}")
+    play_choice = input("Play audio with VLC? (y/n): ").strip().lower()
+    
+    if play_choice in ['y', 'yes']:
+        play_audio_with_vlc(selected_file)
+    
+    # Continue with transcription
     base_name = os.path.splitext(selected_file)[0]
     txt_path = os.path.join(MEDIA_DIR, base_name + ".txt")
 

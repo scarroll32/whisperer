@@ -3,6 +3,10 @@ venv/
 __pycache__/
 *.pyc
 
+# Coverage files
+.coverage
+coverage.xml
+
 # Whisper transcription outputs
 *.txt
 *.srt

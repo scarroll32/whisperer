@@ -2,7 +2,7 @@
 
 ![Example](example.png)
 
-Lightweight CLI for transcribing audio files using [OpenAI Whisper](https://github.com/openai/whisper). It automatically sets up a Python virtual environment, installs Whisper, and generates `.txt` transcripts.
+Lightweight CLI for transcribing audio files using [OpenAI Whisper](https://github.com/openai/whisper) on OS X. It automatically sets up a Python virtual environment, installs Whisper, and generates `.txt` transcripts.
 
 ## Folder Structure
 
@@ -17,6 +17,7 @@ whisperer/
 
 - Lists audio files in `media/` and lets you choose
 - Download audio from URLs (direct audio links or YouTube videos)
+- VLC integration - Adds audio to existing VLC playlist or launches new instance (if installed)
 - Transcribes using Whisper and saves as `.txt`
 - Skips files that are already transcribed
 - Automatically creates a Python venv
@@ -27,10 +28,11 @@ whisperer/
 
 - Python 3.8 to 3.11 (Whisper is incompatible with 3.12+)
 - `ffmpeg` installed and available in your system path
+- **VLC** (optional) - For automatic audio playback
 
 ## Installation (macOS)
 
-1. Install Homebrew (https://brew.sh)
+1. Install [Homebrew](https://brew.sh)
 2. Run:
 
    ```bash
@@ -42,6 +44,12 @@ whisperer/
    ```bash
    python3 --version
    ffmpeg -version
+   ```
+
+4. (Optional) Install VLC for audio playback:
+
+   ```bash
+   brew install --cask vlc
    ```
 
 ## How to Run
@@ -79,7 +87,7 @@ The app now supports downloading audio from URLs:
 1. Run the app: `./whisperer`
 2. Select option "1. Download audio from URL"
 3. Enter the URL (YouTube or direct audio link)
-4. The file will be downloaded and automatically transcribed
+4. The file will be downloaded, automatically added to VLC playlist (or launched if not running), and transcribed
 
 ## Changing the Language
 
@@ -130,24 +138,12 @@ If direct audio downloads fail:
 2. Check that the server allows direct downloads
 3. Ensure the file format is supported (`.mp3`, `.wav`, `.m4a`, `.flac`)
 
-## Testing
-
-The project includes comprehensive tests with mocked external dependencies:
-
-### Running Tests
+## Running Tests
 
 ```bash
 # Run all tests
 python tests/runners/tests.py
-
-# Or using pytest directly (if in virtual environment)
-pytest tests/ -v
-
-# Run with coverage
-pytest tests/ -v --cov=app --cov-report=term-missing
 ```
-
-
 
 ## License
 
