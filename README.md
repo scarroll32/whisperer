@@ -68,9 +68,54 @@ On first run, the script will:
 - Show menu with options to download from URL or select existing files
 - Generate a `.txt` transcript
 
+## Transcript Formatting
+
+By default, transcripts are automatically formatted to improve readability by joining sentence fragments and removing excessive line breaks.
+
+### Unformatted Transcripts
+
+If you want to preserve the original Whisper output without any formatting, you can manually create a `.noformat.txt` file:
+
+1. After transcription, rename the generated `.txt` file to `.noformat.txt`
+2. The app will detect this file and display the transcript without any formatting changes
+3. This is useful for song lyrics or other content where you want to preserve the original line structure
+
+### Speaker Detection
+
+The app automatically detects and separates different speakers in conversations:
+
+1. Speaker detection is enabled by default for all transcriptions
+2. Each speaker's content appears on a new line
+3. No blank lines or speaker labels - just clean line separation
+
+**Example:**
+```
+media/
+├── conversation.mp3
+├── conversation.txt          # Speaker-separated transcript
+└── conversation.noformat.txt # Unformatted transcript (manually created)
+```
+
+**Speaker-separated output example:**
+```
+l'acétamipride
+pour trois ans,
+ils voyaient un peu d'espoir
+par rapport à leurs concurrents
+```
+
+**File Priority:**
+1. `.noformat.txt` (if manually created)
+2. `.txt` (speaker-separated transcript)
+
+**Speaker Detection Logic:**
+- Detects speaker changes based on line breaks, questions, and common phrases
+- Works best with clear conversation patterns
+- For more accurate detection, consider using dedicated speaker diarization tools
+
 ## URL Download Feature
 
-The app now supports downloading audio from URLs:
+The app supports downloading audio from URLs:
 
 ### Direct Audio Links
 - Supports direct links to audio files (`.mp3`, `.wav`, `.m4a`, `.flac`, etc.)

@@ -57,20 +57,27 @@ def main():
     print(f"\nSelected file: {selected_file}")
     play_audio_with_vlc(selected_file)
     
-    # Continue with transcription
+    # Continue with transcription (speaker detection is now automatic)
     base_name = os.path.splitext(selected_file)[0]
     txt_path = os.path.join(MEDIA_DIR, base_name + ".txt")
+    noformat_path = os.path.join(MEDIA_DIR, base_name + ".noformat.txt")
 
-    if os.path.exists(txt_path):
-        print(f"\nTranscription already exists for '{selected_file}':\n")
+    # Check for existing transcriptions
+    if os.path.exists(noformat_path):
+        print(f"\nUnformatted transcription exists for '{selected_file}':\n")
+        with open(noformat_path, "r", encoding="utf-8") as f:
+            raw_text = f.read()
+            print(raw_text)  # No formatting applied
+    elif os.path.exists(txt_path):
+        print(f"\nTranscription exists for '{selected_file}':\n")
         with open(txt_path, "r", encoding="utf-8") as f:
             raw_text = f.read()
-            print(clean_transcript(raw_text))
+            print(raw_text)  # Speaker-separated format (no formatting applied)
     else:
-        transcribe(selected_file)
+        transcribe(selected_file, detect_speakers=True)  # Always enable speaker detection
         with open(txt_path, "r", encoding="utf-8") as f:
             raw_text = f.read()
-            print(clean_transcript(raw_text))
+            print(raw_text)  # Speaker-separated format
 
 if __name__ == "__main__":
     main() 
