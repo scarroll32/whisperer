@@ -3,6 +3,7 @@ import subprocess
 import sys
 import venv
 from datetime import datetime
+import re
 
 BASE_DIR = os.path.dirname(__file__)
 VENV_DIR = os.path.join(BASE_DIR, "venv")
@@ -90,6 +91,13 @@ def transcribe(file_name, language):
         log(f"Transcription failed for {file_name} with exit code {result.returncode}")
         sys.exit(1)
 
+def clean_transcript(text):
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    joined = " ".join(lines)
+    # Add newline after sentence-ending punctuation
+    split_sentences = re.split(r'(?<=[.!?]) +', joined)
+    return "\n".join(split_sentences)
+
 def main():
     ensure_venv_and_whisper()
 
@@ -116,11 +124,13 @@ def main():
     if os.path.exists(txt_path):
         print(f"\nTranscription already exists for '{selected_file}':\n")
         with open(txt_path, "r", encoding="utf-8") as f:
-            print(f.read())
+            raw_text = f.read()
+            print(clean_transcript(raw_text))
     else:
         transcribe(selected_file, DEFAULT_LANGUAGE)
         with open(txt_path, "r", encoding="utf-8") as f:
-            print(f.read())
+            raw_text = f.read()
+            print(clean_transcript(raw_text))
 
 if __name__ == "__main__":
     main()
