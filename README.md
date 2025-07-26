@@ -130,6 +130,25 @@ If direct audio downloads fail:
 2. Check that the server allows direct downloads
 3. Ensure the file format is supported (`.mp3`, `.wav`, `.m4a`, `.flac`)
 
+## Testing
+
+The project includes comprehensive tests with mocked external dependencies:
+
+### Running Tests
+
+```bash
+# Run all tests
+python tests/runners/tests.py
+
+# Or using pytest directly (if in virtual environment)
+pytest tests/ -v
+
+# Run with coverage
+pytest tests/ -v --cov=app --cov-report=term-missing
+```
+
+
+
 ## License
 
 MIT
