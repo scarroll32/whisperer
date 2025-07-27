@@ -92,14 +92,14 @@ def play_audio_with_vlc(audio_file):
         
         # Check if VLC is already running
         if is_vlc_running():
-            print("VLC is running - adding to existing playlist...")
+            print("\nVLC is running - adding to existing playlist...")
             log("VLC is running, attempting to add to playlist")
             
             # Try to add to existing VLC playlist
             if add_to_vlc_playlist(audio_file):
                 return True
             else:
-                print("Failed to add to playlist - launching new VLC instance")
+                print("Launching VLC")
                 log("Failed to add to playlist, launching new VLC instance")
         
         # Launch new VLC instance with the audio file
@@ -107,7 +107,7 @@ def play_audio_with_vlc(audio_file):
                        stdout=subprocess.DEVNULL, 
                        stderr=subprocess.DEVNULL)
         
-        print(f"Playing audio with VLC: {audio_file}")
+        #print(f"Playing audio with VLC: {audio_file}")
         log(f"Started VLC playback: {audio_file}")
         return True
         

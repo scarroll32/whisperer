@@ -21,11 +21,9 @@ def transcribe(file_name, language=DEFAULT_LANGUAGE, detect_speakers=False):
     
     # Use CPU for transcription
     device = "cpu"
-    print("Using CPU for transcription")
     
     if detect_speakers:
         # Use speaker detection with real-time progress
-        print("Transcribing with speaker detection...")
         process = subprocess.Popen(
             [whisper_cmd, file_name, "--language", language, "--task", "transcribe", "--output_format", "txt", "--word_timestamps", "True", "--device", device, "--verbose", "True"],
             cwd=MEDIA_DIR,
@@ -36,7 +34,7 @@ def transcribe(file_name, language=DEFAULT_LANGUAGE, detect_speakers=False):
             universal_newlines=True
         )
         
-        # Capture output in real-time (only log, don't display timestamps)
+        # Capture output in real-time and display progress
         output_lines = []
         while True:
             line = process.stdout.readline()
@@ -45,9 +43,18 @@ def transcribe(file_name, language=DEFAULT_LANGUAGE, detect_speakers=False):
             if line:
                 line = line.strip()
                 output_lines.append(line)
-                # Don't display timestamps in console - only log them
+                # Display progress lines (timestamps and transcription progress)
+                if line.startswith('[') and '-->' in line:
+                    print(".", end="", flush=True)  # Show dot for each completed block
+                elif line.startswith('Loading'):
+                    print(f"  {line}")
+                elif line.startswith('Detecting') or line.startswith('Processing'):
+                    print(f"  {line}")
         
         result = process.wait()
+        
+        # Add newline after progress dots
+        print()  # New line after progress dots
         
         # Log the output
         with open(LOG_FILE, "a", encoding="utf-8") as logf:
@@ -56,13 +63,13 @@ def transcribe(file_name, language=DEFAULT_LANGUAGE, detect_speakers=False):
         if result == 0:
             # Process the output to add speaker separation
             process_speaker_output(file_name)
+            print()  # Extra blank line after successful transcription
         else:
             print("Error during transcription. Check logs/whisperer.log for details.")
             log(f"Transcription failed for {file_name} with exit code {result}")
             sys.exit(1)
     else:
         # Standard transcription with real-time progress
-        print("Transcribing...")
         process = subprocess.Popen(
             [whisper_cmd, file_name, "--language", language, "--task", "transcribe", "--output_format", "txt", "--device", device, "--verbose", "True"],
             cwd=MEDIA_DIR,
@@ -73,7 +80,7 @@ def transcribe(file_name, language=DEFAULT_LANGUAGE, detect_speakers=False):
             universal_newlines=True
         )
         
-        # Capture output in real-time (only log, don't display timestamps)
+        # Capture output in real-time and display progress
         output_lines = []
         while True:
             line = process.stdout.readline()
@@ -82,15 +89,26 @@ def transcribe(file_name, language=DEFAULT_LANGUAGE, detect_speakers=False):
             if line:
                 line = line.strip()
                 output_lines.append(line)
-                # Don't display timestamps in console - only log them
+                # Display progress lines (timestamps and transcription progress)
+                if line.startswith('[') and '-->' in line:
+                    print(".", end="", flush=True)  # Show dot for each completed block
+                elif line.startswith('Transcribing') or line.startswith('Loading'):
+                    print(f"  {line}")
+                elif line.startswith('Detecting') or line.startswith('Processing'):
+                    print(f"  {line}")
         
         result = process.wait()
+        
+        # Add newline after progress dots
+        print()  # New line after progress dots
         
         # Log the output
         with open(LOG_FILE, "a", encoding="utf-8") as logf:
             logf.write('\n'.join(output_lines) + '\n')
 
-        if result != 0:
+        if result == 0:
+            print()  # Extra blank line after successful transcription
+        else:
             print("Error during transcription. Check logs/whisperer.log for details.")
             log(f"Transcription failed for {file_name} with exit code {result}")
             sys.exit(1)
