@@ -19,36 +19,80 @@ def transcribe(file_name, language=DEFAULT_LANGUAGE, detect_speakers=False):
 
     whisper_cmd = os.path.join(VENV_DIR, "bin", "whisper")
     
+    # Use CPU for transcription
+    device = "cpu"
+    print("Using CPU for transcription")
+    
     if detect_speakers:
-        # Use speaker detection
-        with open(LOG_FILE, "a", encoding="utf-8") as logf:
-            result = subprocess.run(
-                [whisper_cmd, file_name, "--language", language, "--task", "transcribe", "--output_format", "txt", "--word_timestamps", "True"],
-                cwd=MEDIA_DIR,
-                stdout=logf,
-                stderr=logf
-            )
+        # Use speaker detection with real-time progress
+        print("Transcribing with speaker detection...")
+        process = subprocess.Popen(
+            [whisper_cmd, file_name, "--language", language, "--task", "transcribe", "--output_format", "txt", "--word_timestamps", "True", "--device", device, "--verbose", "True"],
+            cwd=MEDIA_DIR,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+            universal_newlines=True
+        )
         
-        if result.returncode == 0:
+        # Capture output in real-time (only log, don't display timestamps)
+        output_lines = []
+        while True:
+            line = process.stdout.readline()
+            if not line and process.poll() is not None:
+                break
+            if line:
+                line = line.strip()
+                output_lines.append(line)
+                # Don't display timestamps in console - only log them
+        
+        result = process.wait()
+        
+        # Log the output
+        with open(LOG_FILE, "a", encoding="utf-8") as logf:
+            logf.write('\n'.join(output_lines) + '\n')
+        
+        if result == 0:
             # Process the output to add speaker separation
             process_speaker_output(file_name)
         else:
             print("Error during transcription. Check logs/whisperer.log for details.")
-            log(f"Transcription failed for {file_name} with exit code {result.returncode}")
+            log(f"Transcription failed for {file_name} with exit code {result}")
             sys.exit(1)
     else:
-        # Standard transcription
+        # Standard transcription with real-time progress
+        print("Transcribing...")
+        process = subprocess.Popen(
+            [whisper_cmd, file_name, "--language", language, "--task", "transcribe", "--output_format", "txt", "--device", device, "--verbose", "True"],
+            cwd=MEDIA_DIR,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+            universal_newlines=True
+        )
+        
+        # Capture output in real-time (only log, don't display timestamps)
+        output_lines = []
+        while True:
+            line = process.stdout.readline()
+            if not line and process.poll() is not None:
+                break
+            if line:
+                line = line.strip()
+                output_lines.append(line)
+                # Don't display timestamps in console - only log them
+        
+        result = process.wait()
+        
+        # Log the output
         with open(LOG_FILE, "a", encoding="utf-8") as logf:
-            result = subprocess.run(
-                [whisper_cmd, file_name, "--language", language, "--task", "transcribe", "--output_format", "txt"],
-                cwd=MEDIA_DIR,
-                stdout=logf,
-                stderr=logf
-            )
+            logf.write('\n'.join(output_lines) + '\n')
 
-        if result.returncode != 0:
+        if result != 0:
             print("Error during transcription. Check logs/whisperer.log for details.")
-            log(f"Transcription failed for {file_name} with exit code {result.returncode}")
+            log(f"Transcription failed for {file_name} with exit code {result}")
             sys.exit(1)
 
 def process_speaker_output(file_name):

@@ -40,15 +40,28 @@ def mock_log_dir(temp_dir):
 def mock_subprocess():
     """Mock subprocess calls"""
     with patch('subprocess.run') as mock_run, \
-         patch('subprocess.check_call') as mock_check_call:
+         patch('subprocess.check_call') as mock_check_call, \
+         patch('subprocess.Popen') as mock_popen:
         
         # Mock successful subprocess calls
         mock_run.return_value = Mock(returncode=0)
         mock_check_call.return_value = None
         
+        # Mock Popen for transcription
+        mock_process = Mock()
+        mock_process.stdout.readline.side_effect = [
+            "Transcription line 1\n",
+            "Transcription line 2\n",
+            ""  # Empty line to end the loop
+        ]
+        mock_process.poll.return_value = 0  # Process finished
+        mock_process.wait.return_value = 0  # Success
+        mock_popen.return_value = mock_process
+        
         yield {
             'run': mock_run,
-            'check_call': mock_check_call
+            'check_call': mock_check_call,
+            'Popen': mock_popen
         }
 
 @pytest.fixture

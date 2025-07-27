@@ -57,7 +57,6 @@ def test_download_youtube_audio_success(mock_subprocess, temp_dir):
     with patch('app.download.VENV_DIR', os.path.join(temp_dir, "venv")), \
          patch('app.download.MEDIA_DIR', os.path.join(temp_dir, "media")), \
          patch('app.download.LOG_FILE', os.path.join(temp_dir, "test.log")), \
-         patch('app.download.ensure_yt_dlp') as mock_ensure, \
          patch('app.download.log') as mock_log:
         
         # Create media directory
@@ -75,7 +74,6 @@ def test_download_youtube_audio_success(mock_subprocess, temp_dir):
         
         result = download_youtube_audio("https://youtube.com/watch?v=test")
         
-        mock_ensure.assert_called_once()
         assert result == "Test_Video_Title.mp3"
 
 def test_download_youtube_audio_failure(mock_subprocess, temp_dir):
@@ -83,7 +81,6 @@ def test_download_youtube_audio_failure(mock_subprocess, temp_dir):
     with patch('app.download.VENV_DIR', os.path.join(temp_dir, "venv")), \
          patch('app.download.MEDIA_DIR', os.path.join(temp_dir, "media")), \
          patch('app.download.LOG_FILE', os.path.join(temp_dir, "test.log")), \
-         patch('app.download.ensure_yt_dlp') as mock_ensure, \
          patch('app.download.log') as mock_log:
         
         # Mock failed download
@@ -94,7 +91,6 @@ def test_download_youtube_audio_failure(mock_subprocess, temp_dir):
         
         result = download_youtube_audio("https://youtube.com/watch?v=test")
         
-        mock_ensure.assert_called_once()
         assert result is None
 
 def test_download_direct_audio_success(mock_urllib, temp_dir):

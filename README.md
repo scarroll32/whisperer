@@ -26,7 +26,7 @@ whisperer/
 
 ## Requirements
 
-- Python 3.11 (built and tested specifically for this version)
+- Python 3.11+ (built and tested with Python 3.13)
 - `ffmpeg` installed and available in your system path
 - **VLC** (optional) - For automatic audio playback
 
@@ -51,6 +51,17 @@ whisperer/
    ```bash
    brew install --cask vlc
    ```
+
+## Dependencies
+
+The app automatically manages its Python dependencies via `requirements.txt`:
+
+- **PyTorch** for CPU inference
+- **OpenAI Whisper** for transcription
+- **yt-dlp** for YouTube downloads
+- **Additional dependencies** (numpy, tiktoken, etc.)
+
+All dependencies are installed automatically when you first run the app.
 
 ## How to Run
 
@@ -154,19 +165,15 @@ Install via Homebrew:
 brew install ffmpeg
 ```
 
-### Python 3.12+ causes errors
+### Performance
 
-Whisper supports Python up to 3.11. Use:
+The app uses CPU for transcription, which provides reliable and consistent performance across all systems. While GPU acceleration would be faster, the current CPU implementation ensures maximum compatibility and stability.
 
-```bash
-brew install python@3.11
-```
+**Note:** The warning about FP16/FP32 is normal and expected when using CPU.
 
-Run with:
+### Python Version Compatibility
 
-```bash
-/opt/homebrew/bin/python3.11 app.py
-```
+The app now supports Python 3.11+ and has been tested with Python 3.13.
 
 ### YouTube download issues
 

@@ -7,7 +7,7 @@ Main application entry point
 import os
 import sys
 from .config import MEDIA_DIR
-from .setup import ensure_venv_and_whisper
+from .setup import ensure_venv_and_dependencies
 from .download import download_from_url
 from .transcribe import transcribe
 from .ui import list_audio_files, print_menu, get_choice, get_url_input
@@ -17,7 +17,7 @@ from .vlc_player import play_audio_with_vlc
 def main():
     """Main application function"""
     # Ensure dependencies are installed
-    ensure_venv_and_whisper()
+    ensure_venv_and_dependencies()
 
     # Get list of audio files
     files = list_audio_files()
@@ -36,7 +36,6 @@ def main():
         downloaded_file = download_from_url(url)
         
         if downloaded_file:
-            print(f"Successfully downloaded: {downloaded_file}")
             # Refresh the file list
             files = list_audio_files()
             # Find the downloaded file in the new list
@@ -53,9 +52,7 @@ def main():
     # Process the selected file
     selected_file = files[choice - 2]  # -2 because choice 1 is URL download
     
-    # Automatically play audio with VLC if available
     print(f"\nSelected file: {selected_file}")
-    play_audio_with_vlc(selected_file)
     
     # Continue with transcription (speaker detection is now automatic)
     base_name = os.path.splitext(selected_file)[0]
@@ -68,16 +65,23 @@ def main():
         with open(noformat_path, "r", encoding="utf-8") as f:
             raw_text = f.read()
             print(raw_text)  # No formatting applied
+        # Play audio after showing existing transcript
+        play_audio_with_vlc(selected_file)
     elif os.path.exists(txt_path):
         print(f"\nTranscription exists for '{selected_file}':\n")
         with open(txt_path, "r", encoding="utf-8") as f:
             raw_text = f.read()
             print(raw_text)  # Speaker-separated format (no formatting applied)
+        # Play audio after showing existing transcript
+        play_audio_with_vlc(selected_file)
     else:
+        # Transcribe first, then play audio
         transcribe(selected_file, detect_speakers=True)  # Always enable speaker detection
         with open(txt_path, "r", encoding="utf-8") as f:
             raw_text = f.read()
             print(raw_text)  # Speaker-separated format
+        # Play audio after transcription is complete
+        play_audio_with_vlc(selected_file)
 
 if __name__ == "__main__":
     main() 

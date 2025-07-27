@@ -6,7 +6,7 @@ from datetime import datetime
 import re
 from .config import VENV_DIR, MEDIA_DIR, LOG_FILE
 from .utils import log
-from .setup import ensure_yt_dlp
+# yt-dlp is now installed via requirements.txt, so no need to ensure it separately
 from .vlc_player import play_audio_with_vlc
 
 def is_youtube_url(url):
@@ -24,7 +24,7 @@ def download_from_url(url):
 
 def download_youtube_audio(url):
     """Download audio from YouTube URL using yt-dlp"""
-    ensure_yt_dlp()
+    # yt-dlp is now installed via requirements.txt
     
     yt_dlp_bin = os.path.join(VENV_DIR, "bin", "yt-dlp")
     
@@ -90,8 +90,7 @@ def download_youtube_audio(url):
     downloaded_files = [f for f in os.listdir(MEDIA_DIR) if f.startswith(filename) and f.endswith('.mp3')]
     if downloaded_files:
         downloaded_file = downloaded_files[0]
-        # Try to play with VLC
-        play_audio_with_vlc(downloaded_file)
+        # Don't play audio here - let the main function handle it
         return downloaded_file
     return None
 
@@ -118,8 +117,7 @@ def download_direct_audio(url):
         if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
             print(f"Successfully downloaded: {filename}")
             log(f"Successfully downloaded: {filename}")
-            # Try to play with VLC
-            play_audio_with_vlc(filename)
+            # Don't play audio here - let the main function handle it
             return filename
         else:
             print("Download failed: file is empty or doesn't exist")

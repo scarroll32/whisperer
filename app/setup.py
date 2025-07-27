@@ -10,38 +10,27 @@ def create_venv():
     log("Creating virtual environment...")
     venv.create(VENV_DIR, with_pip=True)
 
-def install_whisper():
-    """Install Whisper in the virtual environment"""
-    print("Installing Whisper (this may take a minute)...")
-    log("Installing Whisper...")
+def install_dependencies():
+    """Install all dependencies from requirements.txt"""
+    print("Installing dependencies (this may take a minute)...")
+    log("Installing dependencies from requirements.txt...")
 
     pip_bin = os.path.join(VENV_DIR, "bin", "pip")
+    requirements_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "requirements.txt")
 
     with open(LOG_FILE, "a", encoding="utf-8") as logf:
         subprocess.check_call(
             [pip_bin, "install", "--upgrade", "pip", "setuptools", "wheel"],
             stdout=logf, stderr=logf
         )
+        # Install all dependencies from requirements.txt
         subprocess.check_call(
-            [pip_bin, "install", "git+https://github.com/openai/whisper.git"],
+            [pip_bin, "install", "-r", requirements_path],
             stdout=logf, stderr=logf
         )
 
-def install_yt_dlp():
-    """Install yt-dlp in the virtual environment"""
-    print("Installing yt-dlp for YouTube downloads...")
-    log("Installing yt-dlp...")
-
-    pip_bin = os.path.join(VENV_DIR, "bin", "pip")
-
-    with open(LOG_FILE, "a", encoding="utf-8") as logf:
-        subprocess.check_call(
-            [pip_bin, "install", "yt-dlp"],
-            stdout=logf, stderr=logf
-        )
-
-def ensure_venv_and_whisper():
-    """Ensure virtual environment exists and Whisper is installed"""
+def ensure_venv_and_dependencies():
+    """Ensure virtual environment exists and all dependencies are installed"""
     if not os.path.exists(VENV_DIR):
         create_venv()
 
@@ -49,20 +38,8 @@ def ensure_venv_and_whisper():
 
     try:
         subprocess.run(
-            [python_bin, "-c", "import whisper"],
+            [python_bin, "-c", "import whisper, yt_dlp"],
             check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
         )
     except subprocess.CalledProcessError:
-        install_whisper()
-
-def ensure_yt_dlp():
-    """Ensure yt-dlp is installed"""
-    python_bin = os.path.join(VENV_DIR, "bin", "python")
-
-    try:
-        subprocess.run(
-            [python_bin, "-c", "import yt_dlp"],
-            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-        )
-    except subprocess.CalledProcessError:
-        install_yt_dlp() 
+        install_dependencies() 
