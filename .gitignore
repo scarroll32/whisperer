@@ -21,6 +21,9 @@ coverage.xml
 *.log
 *.tmp
 
+# User settings (not tracked by git)
+settings.json
+
 # Ignore media folder contents but keep the folder itself
 media/*
 !media/.keep

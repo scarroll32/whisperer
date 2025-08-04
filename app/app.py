@@ -6,11 +6,11 @@ Main application entry point
 
 import os
 import sys
-from .config import MEDIA_DIR
+from .config import MEDIA_DIR, load_language
 from .setup import ensure_venv_and_dependencies
 from .download import download_from_url
 from .transcribe import transcribe
-from .ui import list_audio_files, print_menu, get_choice, get_url_input
+from .ui import list_audio_files, print_menu, get_choice, get_url_input, change_language
 from .utils import clean_transcript
 from .vlc_player import play_audio_with_vlc
 
@@ -40,7 +40,7 @@ def main():
             files = list_audio_files()
             # Find the downloaded file in the new list
             try:
-                file_index = files.index(downloaded_file) + 2  # +2 because choice 1 is URL download
+                file_index = files.index(downloaded_file) + 3  # +3 because choice 1 is URL download, 2 is language change
                 choice = file_index
             except ValueError:
                 print("Error: Downloaded file not found in media directory")
@@ -48,11 +48,19 @@ def main():
         else:
             print("Failed to download audio from URL")
             return
+    
+    if choice == 2:
+        # Change language option
+        change_language()
+        return
 
-    # Process the selected file
-    selected_file = files[choice - 2]  # -2 because choice 1 is URL download
+    # Process the selected file (choice >= 3)
+    selected_file = files[choice - 3]  # -3 because choice 1 is URL download, 2 is language change
     
     print(f"\nSelected file: {selected_file}")
+    
+    # Get current language setting
+    current_language = load_language()
     
     # Continue with transcription (speaker detection is now automatic)
     base_name = os.path.splitext(selected_file)[0]
@@ -76,7 +84,7 @@ def main():
         play_audio_with_vlc(selected_file)
     else:
         # Transcribe first, then play audio
-        transcribe(selected_file, detect_speakers=True)  # Always enable speaker detection
+        transcribe(selected_file, language=current_language, detect_speakers=True)  # Use selected language
         with open(txt_path, "r", encoding="utf-8") as f:
             raw_text = f.read()
             print(raw_text)  # Speaker-separated format

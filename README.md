@@ -147,13 +147,16 @@ The app supports downloading audio from URLs:
 
 ## Changing the Language
 
-Edit this line in `app.py`:
+1. Run the app: `./whisperer`
+2. Select option "2. Change language (currently 'fr')"
+3. Choose from the available languages:
+   - `fr` (French) - default
+   - `en` (English)
+   - `it` (Italian)
+   - `de` (German)
+4. Your selection is automatically saved to `settings.json` (not tracked by `git`)
 
-```python
-DEFAULT_LANGUAGE = "fr"
-```
-
-Replace `"fr"` with any ISO code, like `"en"`, `"it"`, `"es"`, etc.
+Your language choice is saved in `settings.json`
 
 ## Troubleshooting
 
